@@ -1,4 +1,5 @@
 import express from "express";
+import Articles from "../models/articles.js"
 const router = express.Router();
 
 
