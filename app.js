@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(urlencoded({ extended: false }));
 
 // here we are using the routes for comming requests
-app.use("/articles", articleRouter);
+app.use("", articleRouter);
 
 // here we are listen the server
 app.listen(5000, () => {
