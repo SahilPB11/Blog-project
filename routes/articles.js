@@ -2,9 +2,9 @@ import express from "express";
 import Articles from "../models/articles.js";
 import { jsonData } from "../utils/jsondata.js";
 const router = express.Router();
+let article = null;
 
 router.get("/", (req, res) => {
-  console.log("mango");
   res.render("Articles/index", { articles: jsonData });
 });
 
@@ -21,7 +21,8 @@ router.post("/", async (req, res) => {
   });
   try {
     article = await article.save();
-    res.redirect(`/articles/${article.id}`);
+    const id = article.id;
+    res.redirect(`/articles/${id}`);
   } catch (e) {
     console.log(e);
     res.render("Articles/new", { article: article });
@@ -29,12 +30,13 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const article = null;
+  console.log(req.params.id);
   try {
-    article = await Articles.findById(req.params.id);
-    res.render("Articles/show", { article: article });
+    article = await Articles.findById({_id:req.params.id});
+    console.log(article);
+    if(article )return res.render("Articles/show", { article: article });
   } catch (error) {
-    if (!article) return res.redirect("/");
+   res.redirect("/articles");
     console.log(error);
   }
 });
