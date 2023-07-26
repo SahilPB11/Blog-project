@@ -13,7 +13,15 @@ router.get('/', (req, res) => {
         createDate : new Date().toLocaleDateString(),
         descrption : "text description"
     }]
-    res.render('index', {articles : articles});
+    res.render('Articles/index', {articles : articles});
+})
+
+router.get("/new", (req, res) =>{
+    res.render('Articles/new');
+})
+
+router.post("/", (req, res) => {
+    
 })
 
 export default router;

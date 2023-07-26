@@ -5,7 +5,7 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("/view", "view");
 app.use(express.json());
-app.use("", articleRouter);
+app.use("/articles", articleRouter);
 
 app.listen(5000, () => {
   console.log("Server is wrking on port no 5000");
