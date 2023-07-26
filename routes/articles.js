@@ -5,7 +5,12 @@ const router = express.Router();
 router.get('/', (req, res) => {
     const articles = [{
         title: "text article", 
-        createDate : Date.now(),
+        createDate :new Date().toLocaleDateString(),
+        descrption : "text description"
+    },
+    {
+        title: "text article-2", 
+        createDate : new Date().toLocaleDateString(),
         descrption : "text description"
     }]
     res.render('index', {articles : articles});
