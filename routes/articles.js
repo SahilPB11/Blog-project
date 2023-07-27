@@ -1,6 +1,5 @@
 import express from "express";
 import Articles from "../models/articles.js";
-import { jsonData } from "../utils/jsondata.js";
 const router = express.Router();
 let article = null;
 
@@ -44,7 +43,6 @@ router.get("/:slug", async (req, res) => {
 router.put(
   "/:id",
   async (req, res, next) => {
-    console.log("i am in");
     req.article = await Articles.findById(req.params.id);
     next();
   },
