@@ -1,78 +1,34 @@
 import express from "express";
-import Articles from "../models/articles.js";
+import {
+  dataDelete,
+  editArticleRequest,
+  freshNewArticle,
+  getAllArticles,
+  postfun,
+  putData,
+  showArticle,
+} from "../controlers/funControl.js";
 const router = express.Router();
-let article = null;
 
-router.get("/", async (req, res) => {
-  article = await Articles.find().sort({ creaatedAt: "desc" });
-  res.render("Articles/index", { articles: article });
-});
+// get all articles from database
+router.get("/", getAllArticles);
 
-router.get("/new", async (req, res) => {
-  await res.render("Articles/new", { article: new Articles() });
-});
+// get new article which one we made rfecently
+router.get("/new", freshNewArticle);
 
-router.post(
-  "/",
-  async (req, res, next) => {
-    req.article = new Articles();
-    next();
-  },
-  saveArticleRedirect("new")
-);
+// we are creating a new article withe the help of saveArticleRedirect fun
+router.post("/", postfun);
 
-router.get("/edit/:id", async (req, res) => {
-  try {
-    article = await Articles.findById(req.params.id);
-    res.render("Articles/edit", { article: article });
-  } catch (error) {
-    console.log(error);
-  }
-});
+// here we getting the request for update
+router.get("/edit/:id", editArticleRequest);
 
-router.get("/:slug", async (req, res) => {
-  try {
-    article = await Articles.findOne({ slug: req.params.slug });
-    if (article) return res.render("Articles/show", { article: article });
-  } catch (error) {
-    res.redirect("/");
-    // console.log(error);
-  }
-});
+// here we are getting reqest to show article indviuallay
+router.get("/:slug", showArticle);
 
-router.put(
-  "/:id",
-  async (req, res, next) => {
-    req.article = await Articles.findById(req.params.id);
-    next();
-  },
-  saveArticleRedirect("edit")
-);
+// here we are update the data with the help of putData
+router.put("/:id", putData);
 
-router.delete("/:id", async (req, res) => {
-  try {
-    await Articles.findOneAndRemove(req.param.id);
-    res.redirect("/");
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-function saveArticleRedirect(path) {
-  return async (req, res) => {
-    article = req.article;
-    article.title = req.body.title;
-    article.description = req.body.description;
-    article.markdown = req.body.markdown;
-    try {
-      article = await article.save();
-      const id = article.slug;
-      res.redirect(`/${article.slug}`);
-    } catch (e) {
-      // console.log(e);
-      res.render(`Articles/${path}`, { article: article });
-    }
-  };
-}
+// here we are delete the data with the help of deleteData
+router.delete("/:id", dataDelete);
 
 export default router;
