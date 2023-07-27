@@ -1,6 +1,8 @@
 import express, { urlencoded } from "express";
 import connectDB from "./connection/connectDb.js";
 import articleRouter from "./routes/articles.js";
+import methodOverride from 'method-override';
+
 const app = express();
 
 // connection with mongo db
@@ -13,6 +15,8 @@ app.set("/view", "view");
 // using json and urlencoded to read data
 app.use(express.json());
 app.use(urlencoded({ extended: false }));
+app.use(methodOverride('_method'));
+
 
 // here we are using the routes for comming requests
 app.use("", articleRouter);
