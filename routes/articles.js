@@ -1,34 +1,41 @@
 import express from "express";
-import {
-  dataDelete,
-  editArticleRequest,
-  freshNewArticle,
-  getAllArticles,
-  postfun,
-  putData,
-  showArticle,
-} from "../controlers/funControl.js";
+import * as articlesController from "../controlers/funControl.js";
+
 const router = express.Router();
 
-// get all articles from database
-router.get("/", getAllArticles);
+router.get("/", articlesController.getArticles);
 
-// get new article which one we made rfecently
-router.get("/new", freshNewArticle);
+router.get("/new", articlesController.getNewArticle);
 
-// we are creating a new article withe the help of saveArticleRedirect fun
-router.post("/", postfun);
+router.post("/", articlesController.postNewArticle, saveArticleRedirect("new"));
 
-// here we getting the request for update
-router.get("/edit/:id", editArticleRequest);
+router.get("/edit/:id", articlesController.getEditArticle);
 
-// here we are getting reqest to show article indviuallay
-router.get("/:slug", showArticle);
+router.get("/:slug", articlesController.getArticleBySlug);
 
-// here we are update the data with the help of putData
-router.put("/:id", putData);
+router.put(
+  "/:id",
+  articlesController.putEditArticle,
+  saveArticleRedirect("edit")
+);
 
-// here we are delete the data with the help of deleteData
-router.delete("/:id", dataDelete);
+router.delete("/:id", articlesController.deleteArticle);
+
+function saveArticleRedirect(path) {
+  return async (req, res) => {
+    let article = req.article;
+    article.title = req.body.title;
+    article.description = req.body.description;
+    article.markdown = req.body.markdown;
+    try {
+      article = await article.save();
+      const id = article.slug;
+      res.redirect(`/${article.slug}`);
+    } catch (e) {
+      // console.log(e);
+      res.render(`Articles/${path}`, { article });
+    }
+  };
+}
 
 export default router;
