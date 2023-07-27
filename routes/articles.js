@@ -23,8 +23,12 @@ router.post(
 );
 
 router.get("/edit/:id", async (req, res) => {
-  article = await Articles.findById(req.params.id);
-  res.render("/Article/edit", { article: article });
+  try {
+    article = await Articles.findById(req.params.id);
+    res.render("Articles/edit", { article: article });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 router.get("/:slug", async (req, res) => {
@@ -38,9 +42,10 @@ router.get("/:slug", async (req, res) => {
 });
 
 router.put(
-  "/",
+  "/:id",
   async (req, res, next) => {
-    req.article = Articles.findById(req.params.id);
+    console.log("i am in");
+    req.article = await Articles.findById(req.params.id);
     next();
   },
   saveArticleRedirect("edit")
@@ -64,7 +69,7 @@ function saveArticleRedirect(path) {
     try {
       article = await article.save();
       const id = article.slug;
-      res.redirect(`/`);
+      res.redirect(`/${article.slug}`);
     } catch (e) {
       // console.log(e);
       res.render(`Articles/${path}`, { article: article });
